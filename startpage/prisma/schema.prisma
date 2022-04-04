@@ -9,3 +9,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model List {
+  id          String     @id @default(uuid())
+  icon        String
+  title       String
+  description String
+  createdAt   DateTime   @default(now())
+  deletedAt   DateTime
+  ListItem    ListItem[]
+}
+
+model ListItem {
+  id            String          @id @default(uuid())
+  list          List            @relation(fields: [listId], references: [id])
+  listId        String
+  title         String
+  description   String
+  link          String
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime
+  ListItemStats ListItemStats[]
+}
+
+model ListItemStats {
+  id        String   @id @default(uuid())
+  item      ListItem @relation(fields: [itemId], references: [id])
+  itemId    String
+  count     Int
+  createdAt DateTime @default(now())
+}
